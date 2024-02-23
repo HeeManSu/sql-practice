@@ -1,0 +1,1 @@
+SELECT DEPARTMENT, COUNT(worker_id) as no_of_worker from worker group by department ORDER BY no_of_worker desc;
