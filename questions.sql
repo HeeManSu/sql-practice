@@ -83,5 +83,62 @@ SELECT DEPARTMENT, COUNT(worker_id) as no_of_worker from worker group by departm
 
 -- Q-24. Write an SQL query to print details of the Workers who are also Managers.
 
+-- This will join both the table.
+SELECT * FROM worker as w INNER JOIN title as t on w.worker_id = t.worker_ref_id;
+-- This will show the details of the manager.
+SELECT * FROM worker as w INNER JOIN title as t on w.worker_id = t.worker_ref_id WHERE t.worker_title = 'Manager';
+-- This will show the details of worker who is manager by removing the details of the title table colums
+SELECT W.* FROM worker as w INNER JOIN title as t on w.worker_id = t.worker_ref_id WHERE t.worker_title = 'Manager';
+
+
+-- Q-25. Write an SQL query to fetch number(more than 1) of same titles in the ORG of different types.
+SELECT worker_title, count(*) FROM title group by worker_title HAVING COUNT(*) > 1;
+
+-- Q-26. Write an SQL query to show only odd rows from the table.
+SELECT * FROM worker WHERE MOD(WORKER_ID, 2) != 0;
+SELECT * FROM worker WHERE MOD(WORKER_ID, 2) <> 0;
+
+
+-- Q-27. Write an SQL query to show only even rows from the table.
+SELECT * FROM worker WHERE MOD(WORKER_ID, 2) = 0;
+
+-- Q-28. Write an SQL query to clone a new table from another table.
+-- Clones all the schema but not data
+CREATE TABLE worker_clone LIKE worker;
+--Insert all the data into the cloned table.
+INSERT INTO worker_clone SELECT * FROM worker;
+
+
+-- Q-29. Write an SQL query to fetch intersecting records of two tables.
+-- No intersect keyword in postgres
+SELECT worker.* FROM Worker INNER JOIN worker_clone using(worker_id);
+
+-- Q-30. Write an SQL query to show records from one table that another table does not have.
+-- MINUS
+SELECT worker.* FROM worker LEFT JOIN worker_clone USING(worker_id) WHERE worker_clone.worker_id IS NULL;
+
+-- Q-31. Write an SQL query to show the current date and time. 
+SELECT curdate();
+SELECT now();
+
+-- Q-32. Write an SQL query to show the top n (say 5) records of a table order by descending salary. 
+SELECT * FROM worker ORDER BY salary desc LIMIT 5;
+
+-- Q-33. Write an SQL query to determine the nth (say n=5) highest salary from a table. 
+SELECT * FROM worker ORDER BY salary desc LIMIT 4,1; -- Start from 4 and take 1. This will show the 5th salary. 
+
+-- Q-34. Write an SQL query to determine the 5th highest salary without using LIMIT keyword. 
+-- Using co-related sub query. 
+
+SELECT salary from worker w1
+WHERE 4 = (
+    SELECT COUNT(DISTINCT (w2.salary))
+    FROM worker w2
+    WHERE w2.salary >= w1.salary
+);
+
+-- Q-35. Write an SQL query to fetch the list of employees with the same salary.
+SELECT w1.* FROM worker w1, worker w2 where w1.salary = w2.salary and w1.worker_id != w2.worker_id;
+
 
 
